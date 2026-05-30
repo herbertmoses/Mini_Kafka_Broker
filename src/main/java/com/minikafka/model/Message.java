@@ -7,16 +7,17 @@ public class Message {
     private final long timestamp;
     private final long offset;
     private final boolean shutdownMessage;
+    private final int partitionId;
 
-    public Message(String id, String content, long offset, boolean shutdownMessage) {
+    public Message(String id, String content, long offset, boolean shutdownMessage,
+                   int partitionId) {
         this.id = id;
         this.content = content;
         this.offset = offset;
         this.shutdownMessage = shutdownMessage;
+        this.partitionId = partitionId;
         this.timestamp = System.currentTimeMillis();
     }
-
-
 
     public String getId() {
         return id;
@@ -36,6 +37,11 @@ public class Message {
 
     public long getTimestamp() {
         return timestamp;
+    }
+
+    public int getPartitionId() {
+
+        return partitionId;
     }
 
     @Override

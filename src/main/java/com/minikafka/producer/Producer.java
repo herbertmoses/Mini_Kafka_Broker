@@ -1,7 +1,9 @@
 package com.minikafka.producer;
 
 import com.minikafka.broker.Broker;
+import com.minikafka.broker.Partition;
 import com.minikafka.model.Message;
+import com.minikafka.broker.Partition;
 
 import java.util.UUID;
 
@@ -38,23 +40,38 @@ public class Producer implements Runnable {
                                 " Message-" +
                                 counter++;
 
+//                long offset =
+//                        broker.getTopic(topicName).getNextOffset();
+
+                Partition partition =
+                        broker.getTopic(topicName)
+                                .getPartition(producerName);
+
                 long offset =
-                        broker.getTopic(topicName).getNextOffset();
+                        partition.getNextOffset();
+
 
                 Message message = new Message(
                         UUID.randomUUID().toString(),
                         content,
                         offset,
-                        false
+                        false,
+                        partition.getPartitionId()
                 );
 
-                broker.publish(topicName, message);
+                broker.publish(topicName, producerName, message);
 
                 System.out.println(
                         producerName +
                                 " produced -> " +
                                 content
                 );
+
+//                System.out.println(
+//                        producerName +
+//                                " --> partition " +
+//                                partition.getPartitionId()
+//                );
 
 //                Thread.sleep(2000);
                 Thread.sleep((long) (Math.random() * 3000));

@@ -16,7 +16,8 @@ public class Main {
                 "shutdown",
                 "SHUTDOWN",
                 -1,
-                true
+                true,
+                -1
         );
     }
 
@@ -42,13 +43,17 @@ public class Main {
 
         Consumer consumer1 =
                 new Consumer(
-                        broker.getTopic("orders"),
+                        broker.getTopic("orders")
+                                .getPartitions()
+                                .get(0),
                         "Consumer-1"
                 );
 
         Consumer consumer2 =
                 new Consumer(
-                        broker.getTopic("orders"),
+                        broker.getTopic("orders")
+                                .getPartitions()
+                                .get(2),
                         "Consumer-2"
                 );
 
@@ -71,17 +76,31 @@ public class Main {
             System.out.println("Main Thread Interrupted");
         }
 
-        broker.publish(
-                "orders",
-                createShutdownMessage()
-        );
-
-        broker.publish(
-                "orders",
-                createShutdownMessage()
+        broker.broadcastShutdown(
+                "orders"
         );
 
         executorService.shutdown();
+
+    }
+}
+
+//        broker.publish(
+//                "orders",
+//                "shutdown",
+//                createShutdownMessage()
+//        );
+//
+//        broker.publish(
+//                "orders",
+//                "shutdown",
+//                createShutdownMessage()
+//        );
+//        broker.broadcastShutdown(
+//                "orders"
+//        );
+//
+//        executorService.shutdown();
 
 //        Thread producerThread1 =
 //                new Thread(producer1);
@@ -111,5 +130,5 @@ public class Main {
 //
 //        consumer.consume(
 //                broker.getTopic("orders"
-    }
-}
+//    }
+//}

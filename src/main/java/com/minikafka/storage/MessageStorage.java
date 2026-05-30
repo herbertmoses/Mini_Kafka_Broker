@@ -28,7 +28,9 @@ public class MessageStorage {
         ) {
 
             writer.write(
-                    message.getOffset() +
+                    message.getPartitionId() +
+                            "," +
+                            message.getOffset() +
                             "," +
                             message.getId() +
                             "," +
@@ -66,18 +68,22 @@ public class MessageStorage {
 
                 String[] parts = line.split(",");
 
+                int partitionId =
+                        Integer.parseInt(parts[0]);
+
                 long offset =
-                        Long.parseLong(parts[0]);
+                        Long.parseLong(parts[1]);
 
-                String id = parts[1];
+                String id = parts[2];
 
-                String content = parts[2];
+                String content = parts[3];
 
                 Message message = new Message(
                         id,
                         content,
                         offset,
-                        false
+                        false,
+                        partitionId
                 );
 
                 recoveredMessages.add(message);
