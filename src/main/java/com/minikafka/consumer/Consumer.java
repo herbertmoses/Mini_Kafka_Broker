@@ -24,6 +24,10 @@ public class Consumer implements Runnable {
         this.partition = partition;
     }
 
+    public String getConsumerName() {
+        return consumerName;
+    }
+
     @Override
     public void run()
 

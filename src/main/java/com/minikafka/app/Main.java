@@ -2,6 +2,7 @@ package com.minikafka.app;
 
 import com.minikafka.broker.Broker;
 import com.minikafka.consumer.Consumer;
+import com.minikafka.group.ConsumerGroup;
 import com.minikafka.model.Message;
 import com.minikafka.producer.Producer;
 
@@ -56,6 +57,19 @@ public class Main {
                                 .get(2),
                         "Consumer-2"
                 );
+
+        ConsumerGroup group =
+                new ConsumerGroup(
+                        "order-processors"
+                );
+
+        group.registerConsumer(
+                consumer1
+        );
+
+        group.registerConsumer(
+                consumer2
+        );
 
         broker.recoverTopic("orders");
 
