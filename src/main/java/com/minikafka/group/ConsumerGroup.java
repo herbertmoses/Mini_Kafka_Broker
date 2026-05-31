@@ -54,9 +54,12 @@ public class ConsumerGroup {
                     consumers.get(
                             i % consumers.size()
                     );
-            consumer.setPartition(
+            consumer.assignPartition(
                     partitions.get(i)
             );
+//            consumer.setPartition(
+//                    partitions.get(i)
+//            );
             System.out.println(
                     "Assigned Partition-"
                     + partitions.get(i)

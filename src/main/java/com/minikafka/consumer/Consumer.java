@@ -3,6 +3,8 @@ package com.minikafka.consumer;
 import com.minikafka.broker.Partition;
 import com.minikafka.model.Message;
 import com.minikafka.broker.Topic;
+import java.util.ArrayList;
+import java.util.List;
 
 //public class Consumer {
 public class Consumer implements Runnable {
@@ -10,7 +12,9 @@ public class Consumer implements Runnable {
 //    private final Topic topic;
 //    private final Partition partition;
     private final String consumerName;
-    private Partition partition;
+//    private Partition partition;
+    private final List<Partition> assignedPartitions =
+        new ArrayList<>();
 
 //    public Consumer(Topic topic, String consumerName) {
 //        this.topic = topic;
@@ -18,23 +22,46 @@ public class Consumer implements Runnable {
 //    }
 
     public Consumer(
-            Partition partition,
+//            Partition partition,
             String consumerName
     ) {
         this.consumerName = consumerName;
-        this.partition = partition;
+//        this.partition = partition;
+    }
+
+//    public String getConsumerName() {
+//        return consumerName;
+//    }
+
+//    public Partition getPartition() {
+//        return partition;
+//    }
+
+//    public void setPartition(Partition partition) {
+//        this.partition = partition;
+//    }
+
+    public void assignPartition(
+            Partition partition
+    ) {
+        assignedPartitions.add(partition);
+    }
+
+    public List<Partition> getAssignedPartitions() {
+        return assignedPartitions;
     }
 
     public String getConsumerName() {
         return consumerName;
     }
 
-    public Partition getPartition() {
-        return partition;
-    }
+    public Partition getPrimaryPartition() {
 
-    public void setPartition(Partition partition) {
-        this.partition = partition;
+        if (assignedPartitions.isEmpty()) {
+            return null;
+        }
+
+        return assignedPartitions.get(0);
     }
 
     @Override
@@ -45,6 +72,17 @@ public class Consumer implements Runnable {
             try {
 
 //                Message message = topic.getMessages().take();
+//                Message message = partition.getMessages().take();
+//                Message message = getPrimaryPartition().getMessages().take();
+                Partition partition = getPrimaryPartition();
+
+                if (partition == null) {
+
+                    Thread.sleep(1000);
+
+                    continue;
+                }
+
                 Message message = partition.getMessages().take();
 
 

@@ -44,17 +44,17 @@ public class Main {
 
         Consumer consumer1 =
                 new Consumer(
-                        broker.getTopic("orders")
-                                .getPartitions()
-                                .get(0),
+//                        broker.getTopic("orders")
+//                                .getPartitions()
+//                                .get(0),
                         "Consumer-1"
                 );
 
         Consumer consumer2 =
                 new Consumer(
-                        broker.getTopic("orders")
-                                .getPartitions()
-                                .get(2),
+//                        broker.getTopic("orders")
+//                                .getPartitions()
+//                                .get(2),
                         "Consumer-2"
                 );
 
