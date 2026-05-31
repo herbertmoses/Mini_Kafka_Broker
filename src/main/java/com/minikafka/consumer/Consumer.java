@@ -9,12 +9,12 @@ import java.util.List;
 //public class Consumer {
 public class Consumer implements Runnable {
 
-//    private final Topic topic;
+    //    private final Topic topic;
 //    private final Partition partition;
     private final String consumerName;
-//    private Partition partition;
+    //    private Partition partition;
     private final List<Partition> assignedPartitions =
-        new ArrayList<>();
+            new ArrayList<>();
 
 //    public Consumer(Topic topic, String consumerName) {
 //        this.topic = topic;
@@ -65,58 +65,113 @@ public class Consumer implements Runnable {
     }
 
     @Override
-    public void run()
-
-    {
+    public void run() {
         while (true) {
             try {
 
-//                Message message = topic.getMessages().take();
-//                Message message = partition.getMessages().take();
-//                Message message = getPrimaryPartition().getMessages().take();
-                Partition partition = getPrimaryPartition();
+                boolean messageProcessed = false;
 
-                if (partition == null) {
+                for (Partition partition :
+                        assignedPartitions) {
 
-                    Thread.sleep(1000);
+                    Message message =
+                            partition.getMessages()
+                                    .poll();
 
-                    continue;
-                }
+                    if (message == null) {
 
-                Message message = partition.getMessages().take();
+                        continue;
+                    }
+                    messageProcessed = true;
 
+                    if (message.isShutdownMessage()) {
 
-                if(message.isShutdownMessage()) {
+                        System.out.println(
+                                consumerName +
+                                        " Shutting down gracefully. "
+                        );
+
+                        return;
+                    }
 
                     System.out.println(
                             consumerName +
-                                    " Shutting down gracefully. "
+                                    " consumed-> " +
+                                    " [Partition " +
+                                    partition.getPartitionId() +
+                                    "] " +
+                                    "[Offset " +
+                                    message.getOffset() +
+                                    "]" +
+                                    message.getContent()
                     );
-
-                    break;
                 }
 
-                System.out.println(
-                        consumerName +
-                                " consumed -> " +
-                                "[Offset " +
-                                message.getOffset() +
-                                "] " +
-                                message.getContent()
-                );
+                if (!messageProcessed) {
 
-                Thread.sleep(1000);
+                    Thread.sleep(100);
+                }
             } catch (InterruptedException e) {
 
                 Thread.currentThread().interrupt();
 
                 System.out.println(
-                        consumerName + " interrupted"
+                        consumerName +
+                                " Interrupted"
                 );
+                return;
             }
         }
     }
 }
+
+
+//                Message message = topic.getMessages().take();
+//                Message message = partition.getMessages().take();
+//                Message message = getPrimaryPartition().getMessages().take();
+//                Partition partition = getPrimaryPartition();
+//
+//                if (partition == null) {
+//
+//                    Thread.sleep(1000);
+//
+//                    continue;
+//                }
+//
+//                Message message = partition.getMessages().take();
+//
+//
+//                if(message.isShutdownMessage()) {
+//
+//                    System.out.println(
+//                            consumerName +
+//                                    " Shutting down gracefully. "
+//                    );
+//
+//                    break;
+//                }
+//
+//                System.out.println(
+//                        consumerName +
+//                                " consumed -> " +
+//                                "[Offset " +
+//                                message.getOffset() +
+//                                "] " +
+//                                message.getContent()
+//                );
+//
+//                Thread.sleep(1000);
+//            } catch (InterruptedException e) {
+//
+//                Thread.currentThread().interrupt();
+//
+//                System.out.println(
+//                        consumerName + " interrupted"
+//                );
+//            }
+//        }
+//    }
+//}
 
 //    public void consume (Topic topic) {
 //
