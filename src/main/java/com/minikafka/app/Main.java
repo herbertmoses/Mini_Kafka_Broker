@@ -71,6 +71,10 @@ public class Main {
                 consumer2
         );
 
+        group.assignPartitions(
+                broker.getTopic("orders")
+        );
+
         broker.recoverTopic("orders");
 
         ExecutorService executorService =

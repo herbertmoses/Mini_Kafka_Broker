@@ -8,8 +8,9 @@ import com.minikafka.broker.Topic;
 public class Consumer implements Runnable {
 
 //    private final Topic topic;
-    private final Partition partition;
+//    private final Partition partition;
     private final String consumerName;
+    private Partition partition;
 
 //    public Consumer(Topic topic, String consumerName) {
 //        this.topic = topic;
@@ -26,6 +27,14 @@ public class Consumer implements Runnable {
 
     public String getConsumerName() {
         return consumerName;
+    }
+
+    public Partition getPartition() {
+        return partition;
+    }
+
+    public void setPartition(Partition partition) {
+        this.partition = partition;
     }
 
     @Override

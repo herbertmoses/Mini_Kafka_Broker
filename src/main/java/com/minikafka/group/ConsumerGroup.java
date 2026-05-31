@@ -1,5 +1,7 @@
 package com.minikafka.group;
 
+import com.minikafka.broker.Partition;
+import com.minikafka.broker.Topic;
 import com.minikafka.consumer.Consumer;
 
 import java.util.List;
@@ -36,5 +38,32 @@ public class ConsumerGroup {
 
     public List<Consumer> getConsumers() {
         return consumers;
+    }
+
+    public void assignPartitions (
+            Topic topic
+    ) {
+        List<Partition> partitions =
+                topic.getPartitions();
+
+        for (int i = 0;
+        i<partitions.size();
+        i++) {
+
+            Consumer consumer =
+                    consumers.get(
+                            i % consumers.size()
+                    );
+            consumer.setPartition(
+                    partitions.get(i)
+            );
+            System.out.println(
+                    "Assigned Partition-"
+                    + partitions.get(i)
+                            .getPartitionId()
+                    + " -> "
+                    + consumer.getConsumerName()
+            );
+        }
     }
 }
