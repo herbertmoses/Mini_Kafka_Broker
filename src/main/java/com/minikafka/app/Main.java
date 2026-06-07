@@ -87,7 +87,23 @@ public class Main {
         executorService.submit(consumer2);
 
         try {
-            Thread.sleep(15000);
+            Thread.sleep(5000);
+
+            Consumer consumer3 =
+                    new Consumer(
+                            "Consumer-3"
+                    );
+
+            group.registerConsumer(
+                    consumer3
+            );
+
+            executorService.submit(
+                    consumer3
+            );
+
+            Thread.sleep(10000);
+
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
 

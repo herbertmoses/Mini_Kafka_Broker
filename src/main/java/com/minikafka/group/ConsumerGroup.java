@@ -7,6 +7,8 @@ import com.minikafka.consumer.Consumer;
 import java.util.List;
 import java.util.ArrayList;
 
+import com.minikafka.consumer.OffsetManager;
+
 public class ConsumerGroup {
 
     private final String groupId;
@@ -14,6 +16,13 @@ public class ConsumerGroup {
     private Topic topic;
 
     private final List<Consumer> consumers;
+
+    private final OffsetManager offsetManager =
+            new OffsetManager();
+
+    public OffsetManager getOffsetManager() {
+        return offsetManager;
+    }
 
     public ConsumerGroup(String groupId) {
 
@@ -88,6 +97,11 @@ public class ConsumerGroup {
         if (topic == null) {
             return;
         }
+
+        System.out.println(
+                "\nRebalancing consumer group: "
+                + groupId
+        );
 
         consumers.forEach(
                 consumer ->
