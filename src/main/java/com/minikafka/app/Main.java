@@ -71,6 +71,9 @@ public class Main {
                 consumer2
         );
 
+        consumer1.setConsumerGroup(group);
+        consumer2.setConsumerGroup(group);
+
         group.assignPartitions(
                 broker.getTopic("orders")
         );
@@ -93,6 +96,10 @@ public class Main {
                     new Consumer(
                             "Consumer-3"
                     );
+
+            consumer3.setConsumerGroup(
+                    group
+            );
 
             group.registerConsumer(
                     consumer3

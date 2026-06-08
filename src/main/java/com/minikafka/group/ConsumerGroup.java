@@ -3,6 +3,7 @@ package com.minikafka.group;
 import com.minikafka.broker.Partition;
 import com.minikafka.broker.Topic;
 import com.minikafka.consumer.Consumer;
+import com.minikafka.storage.OffsetStorage;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -20,6 +21,9 @@ public class ConsumerGroup {
     private final OffsetManager offsetManager =
             new OffsetManager();
 
+    private final OffsetStorage offsetStorage =
+            new OffsetStorage();
+
     public OffsetManager getOffsetManager() {
         return offsetManager;
     }
@@ -29,6 +33,33 @@ public class ConsumerGroup {
         this.groupId = groupId;
 
         this.consumers = new ArrayList<>();
+    }
+
+    public void commitOffset (
+            int partitionId,
+            long offset
+    ) {
+
+        offsetManager.commitOffset(
+                groupId,
+                partitionId,
+                offset
+        );
+
+        offsetStorage.saveOffset(
+                groupId,
+                partitionId,
+                offset
+        );
+
+        System.out.println(
+                "Committed Offset -> Group: "
+                + groupId
+                + " Partition: "
+                + partitionId
+                + " Offset: "
+                + offset
+        );
     }
 
     public void registerConsumer (
