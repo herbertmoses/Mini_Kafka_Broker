@@ -8,6 +8,7 @@ import java.awt.*;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicInteger;
 
 
 public class Topic {
@@ -17,6 +18,9 @@ public class Topic {
     private final List<Partition> partitions;
 
     private final AtomicLong offsetCounter;
+
+    private final AtomicInteger nextPartition =
+            new AtomicInteger(0);
 
     private static final long MAX_OFFSET = 20;
 
@@ -40,10 +44,18 @@ public class Topic {
     public Partition getPartition (
             String key
     ) {
+//        int partitionIndex =
+//                Math.abs(
+//                        key.hashCode()
+//                ) % partitions.size();
         int partitionIndex =
-                Math.abs(
-                        key.hashCode()
-                ) % partitions.size();
+                nextPartition.getAndIncrement()
+                        % partitions.size();
+
+//        System.out.println(
+//                "Partition Selected -> "
+//                + partitionIndex
+//        );
 
         return partitions.get(
                 partitionIndex
