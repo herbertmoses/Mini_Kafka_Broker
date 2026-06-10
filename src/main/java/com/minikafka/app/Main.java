@@ -71,6 +71,9 @@ public class Main {
                 consumer2
         );
 
+        consumer1.setConsumerGroup(group);
+        consumer2.setConsumerGroup(group);
+
         group.assignPartitions(
                 broker.getTopic("orders")
         );
@@ -87,7 +90,27 @@ public class Main {
         executorService.submit(consumer2);
 
         try {
-            Thread.sleep(15000);
+            Thread.sleep(5000);
+
+            Consumer consumer3 =
+                    new Consumer(
+                            "Consumer-3"
+                    );
+
+            consumer3.setConsumerGroup(
+                    group
+            );
+
+            group.registerConsumer(
+                    consumer3
+            );
+
+            executorService.submit(
+                    consumer3
+            );
+
+            Thread.sleep(10000);
+
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
 

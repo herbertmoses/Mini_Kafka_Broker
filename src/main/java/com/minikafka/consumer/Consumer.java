@@ -1,6 +1,7 @@
 package com.minikafka.consumer;
 
 import com.minikafka.broker.Partition;
+import com.minikafka.group.ConsumerGroup;
 import com.minikafka.model.Message;
 import com.minikafka.broker.Topic;
 import java.util.ArrayList;
@@ -15,6 +16,8 @@ public class Consumer implements Runnable {
     //    private Partition partition;
     private final List<Partition> assignedPartitions =
             new ArrayList<>();
+
+    private ConsumerGroup consumerGroup;
 
 //    public Consumer(Topic topic, String consumerName) {
 //        this.topic = topic;
@@ -40,6 +43,12 @@ public class Consumer implements Runnable {
 //    public void setPartition(Partition partition) {
 //        this.partition = partition;
 //    }
+
+    public void setConsumerGroup(
+            ConsumerGroup consumerGroup
+    ) {
+        this.consumerGroup = consumerGroup;
+    }
 
     public void assignPartition(
             Partition partition
@@ -104,6 +113,11 @@ public class Consumer implements Runnable {
                                     message.getOffset() +
                                     "]" +
                                     message.getContent()
+                    );
+
+                    consumerGroup.commitOffset(
+                            partition.getPartitionId(),
+                            message.getOffset()
                     );
                 }
 
